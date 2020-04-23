@@ -34,7 +34,7 @@ def show_image(image, figsize=(20, 20), title=None, cmap=None):
     plt.show()
 
 
-def subplot_images(images, n_rows, n_columns, figsize=(20, 20), titles=None, cmap=None):
+def subplot_images(images, n_rows, n_columns, figsize=(20, 20), titles=None, cmap=None, layout_pad=(1, 1)):
     """
     show several images
 
@@ -43,6 +43,7 @@ def subplot_images(images, n_rows, n_columns, figsize=(20, 20), titles=None, cma
     :param n_columns: int: column number
     :param figsize: (int, int): figure size
     :param cmap: str: colormap name, for example "Greys_r"
+    :param layout_pad: (flaot, float): padding (width/height) between subplots
     :return: None
     """
     assert len(images) <= n_rows * n_columns
@@ -50,7 +51,9 @@ def subplot_images(images, n_rows, n_columns, figsize=(20, 20), titles=None, cma
         titles = [titles] * len(images)
     plt.figure(figsize=figsize)
     for i, image in enumerate(images, start=1):
-        plt.subplot(n_rows, n_columns, i)
+        plt.subplot(n_rows, n_columns, i, ymargin=0.5, xmargin=0.5)
         plt.title(titles[i-1])
+        plt.axis('off')
+        plt.tight_layout(w_pad=layout_pad[0], h_pad=layout_pad[1])
         plt.imshow(image, cmap)
     plt.show()
