@@ -7,7 +7,10 @@ Example:
 ![image](./images/labelme_example.jpg)
 
 Augmentations exmaple:
-![image](./images/augmentation_example.png)
+
+<img src="images/augmentation_example.png"  width="1072" height="1072" alt="image">
+
+![image](images/augmentation_example.png)
 
 File description:
 - Experiment.ipynb: main experiment file
@@ -15,7 +18,7 @@ File description:
 - labelme_utils.py: utils to work with labelme format
 - blending.py: functions to blend images(in order to change background)
 - boxes_utils.py: utils to works with different boxes format
-- post_processing.py: function to post0-process model output masks to extract boxes and counters
-- metrics.py: object detections functions to evaluate model
+- post_processing.py: function to post-process model output masks to extract boxes and counters
+- metrics.py: functions to calculate object detections metrics in order to evaluate model
 - show_utils.py: functions to draw images
 - image_utils.py: some image utils
