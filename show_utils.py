@@ -18,23 +18,27 @@ def _read_image_if_need(*args):
     return images
 
 
-def show_image(image, figsize=(20, 20), title=None, cmap=None):
+def show_image(image, figsize=(20, 20), title=None, cmap=None, axis=False):
     """
     show single image
 
     :param image: np.array: image
     :param figsize: (int, int): figure size
+    :param title: str: image title
     :param cmap: str: colormap name, for example "Greys_r"
+    :param axis: bool: draw axis or not
     :return: None
     """
     image = _read_image_if_need(image)[0]
     plt.figure(figsize=figsize)
     plt.title(title)
+    if not axis:
+        plt.axis('off')
     plt.imshow(image, cmap)
     plt.show()
 
 
-def subplot_images(images, n_rows, n_columns, figsize=(20, 20), titles=None, cmap=None, layout_pad=(1, 1)):
+def subplot_images(images, n_rows, n_columns, figsize=(20, 20), titles=None, cmap=None, axis=False, layout_pad=(1, 1)):
     """
     show several images
 
@@ -42,8 +46,10 @@ def subplot_images(images, n_rows, n_columns, figsize=(20, 20), titles=None, cma
     :param n_rows: int: row number
     :param n_columns: int: column number
     :param figsize: (int, int): figure size
+    :param titles: str or list[str]: image titles
     :param cmap: str: colormap name, for example "Greys_r"
-    :param layout_pad: (flaot, float): padding (width/height) between subplots
+    :param axis: bool: draw axis or not
+    :param layout_pad: (float, float): padding (width/height) between subplots
     :return: None
     """
     assert len(images) <= n_rows * n_columns
@@ -53,7 +59,8 @@ def subplot_images(images, n_rows, n_columns, figsize=(20, 20), titles=None, cma
     for i, image in enumerate(images, start=1):
         plt.subplot(n_rows, n_columns, i, ymargin=0.5, xmargin=0.5)
         plt.title(titles[i-1])
-        plt.axis('off')
+        if not axis:
+            plt.axis('off')
         plt.tight_layout(w_pad=layout_pad[0], h_pad=layout_pad[1])
         plt.imshow(image, cmap)
     plt.show()
