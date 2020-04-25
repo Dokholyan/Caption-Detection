@@ -1,9 +1,12 @@
 import rtree.index
+import matplotlib.pyplot as plt
 
+from descartes import PolygonPatch
 from shapely.geometry import Polygon
 from shapely.ops import polygonize
 
 from boxes_utils import convert_boxes
+from image_utils import figure2image
 
 
 def _contours2polygons(contours):
@@ -108,7 +111,7 @@ def get_detection_statistics(prediction, ground_truth, threshold=0.5, check_inpu
         prediction = _contours2polygons(prediction)
         ground_truth = _contours2polygons(ground_truth)
     else:
-        prediction = _boxes2polygons(prediction)
+        prediction = _boxes2polygons(prediction, box_format=input_type)
         ground_truth = _boxes2polygons(ground_truth, box_format=input_type)
 
     return get_detection_statistics_polygons(prediction, ground_truth, threshold=threshold,
@@ -130,3 +133,77 @@ def calculate_detection_metrics(true_positive, false_positive, false_negative):
     return {'precision': precision,
             'recall': recall,
             'f_score': f_score}
+
+
+def show_iou_polygons(pred_polygon, true_polygon, inplace=True):
+    """
+    show intersection between polygons
+
+    :param pred_polygon: polygon: prediction polygon
+    :param true_polygon:  polygon: ground truth polygon
+    :param inplace: bool: show figure or return image
+    :return: None or np.array: return image if inplace=False
+    """
+    pred_polygon = _check_and_fix_polygons([pred_polygon])[0]
+    true_polygon = _check_and_fix_polygons([true_polygon])[0]
+    blue_color = (0, 0, 1)
+    red_color = (0, 0.5, 0.5)
+    green_color = (0, 1, 0)
+    iou = get_polygon_iou(pred_polygon, true_polygon)
+    intersection = pred_polygon.intersection(true_polygon)
+    pred_ = pred_polygon.difference(true_polygon)
+    ground_truth_ = true_polygon.difference(pred_polygon)
+    (minx, miny, maxx, maxy) = pred_polygon.union(true_polygon).bounds
+    fig, ax = plt.subplots(dpi=90)
+
+    weights = maxx - minx
+    heights = maxy - miny
+
+    ax.set_xlim(left=minx - weights / 10, right=maxx + weights / 10)
+    ax.set_ylim(bottom=miny - heights / 10, top=maxy + heights / 10)
+
+    try:
+        patch_pred = PolygonPatch(pred_, fc=blue_color, ec=blue_color, alpha=0.4, label='prediction')
+        ax.add_patch(patch_pred)
+    except:
+        pass
+    try:
+        patch_gt = PolygonPatch(ground_truth_, fc=green_color, ec=green_color, alpha=0.4, label='ground truth')
+        ax.add_patch(patch_gt)
+    except:
+        pass
+    try:
+        patch_intersection = PolygonPatch(intersection, fc=red_color, ec=red_color,
+                                          alpha=0.2, label='intersection')
+        ax.add_patch(patch_intersection)
+    except:
+        pass
+    plt.title(f'iou={round(iou, 3)}')
+    plt.legend(loc="lower right")
+    if not inplace:
+        image = figure2image(fig)
+        plt.close(fig)
+        return image
+    else:
+        plt.show()
+
+
+def show_iou(prediction, ground_truth, inplace=True, input_type='4_points'):
+    """
+    show intersection between prediction and ground_truth
+
+    :param prediction: contour or box: predictions
+    :param ground_truth: contour or box: ground_truth
+    :param inplace: bool: show image or return it
+    :param input_type: input type, should be 'contour' if inputs is np.array [n_points, 1, 2] or any type of boxes:
+    '4_points', 'min_max', 'xywh', '4_random'
+    :return: None or np.array: return image if inplace=False
+    """
+    if input_type == 'contour':
+        prediction = _contours2polygons([prediction])[0]
+        ground_truth = _contours2polygons([ground_truth])[0]
+    else:
+        prediction = _boxes2polygons([prediction], box_format=input_type)[0]
+        ground_truth = _boxes2polygons([ground_truth], box_format=input_type)[0]
+
+    return show_iou_polygons(prediction, ground_truth, inplace=inplace)

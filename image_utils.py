@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 
 from boxes_utils import convert_boxes
 
@@ -70,3 +71,16 @@ def rotate_image(image, angle, borderValue=(255, 255, 255)):
     M[0, 2] += (nW / 2) - cX
     M[1, 2] += (nH / 2) - cY
     return cv2.warpAffine(image, M, (nW, nH), borderValue=borderValue)
+
+
+def figure2image(figure):
+    """
+    convert figure to image
+
+    :param figure: matplotlib.figure.Figure: any matplotlib figure
+    :return: np.array: image
+    """
+    canvas = FigureCanvas(figure)
+    s, (width, height) = canvas.print_to_buffer()
+    image = np.fromstring(s, np.uint8).reshape((height, width, 4))
+    return image
