@@ -1,5 +1,5 @@
 # Caption-Detection
-ABBY Computer Vision Homework Solution
+ABBYY Computer Vision Homework Solution
 
 Solution of the problem of pattern detection on a QR code. 
 Datasets are available [here](https://drive.google.com/open?id=1VXpGMbfL-5qdzQN2z4bWsz21ojvnPdZv)
@@ -48,16 +48,16 @@ and contours from output mask.
 ### Final result:
 
 After contours extraction, it is possible to calculate object detection statistics like TP, FP, FN between prediction contours,
-and ground contours truth by iou measure. 
+and ground contours truth by IOU measure. 
 
-__Note:__ It is not typical object detection metrics because counters, not rectangles are compared.
+__Note:__ It is not typical object detection metrics because counters, not rectangles, are compared.
 The examples you can see hereunder
 
 ![image](images/iou_example.png)
 
 Object detection metrics on test dataset:
 
-iou threshold  | 0.5| 0.6| 0.7| 0.8|
+IOU threshold  | 0.5| 0.6| 0.7| 0.8|
 --- | --- | ---| ---|---|
 precision | 0.978| 0.978| 0.978| 0.674|
 recall| 1.0| 1.0| 1.0| 0.689|
