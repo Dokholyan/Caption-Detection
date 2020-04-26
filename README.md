@@ -6,15 +6,15 @@ Datasets are available [here](https://drive.google.com/open?id=1VXpGMbfL-5qdzQN2
 
 
 ### Examples on out of domain images: 
-(patterns are masked in red.)
+(patterns are masked in red)
 ![image](./images/out-of-domain.png)
 
 #### Usage:
 ```
 git clone https://github.com/Dokholyan/Caption-Detection.git
 cd Caption-Detection
-pip install -r requirements.txt
 sudo apt install python3-rtree #it is need for metrics functions
+pip install -r requirements.txt
 ```
 
 ### Solution
